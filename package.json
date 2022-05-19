@@ -1,0 +1,19 @@
+{
+  "name": "kanap",
+  "version": "1.0.0",
+  "description": "Projet 5 - OpenClassrooms - Kanap",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maureenmartel/MaureenMartel_5_230522.git"
+  },
+  "author": "Maureen Martel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Maureenmartel/MaureenMartel_5_230522/issues"
+  },
+  "homepage": "https://github.com/Maureenmartel/MaureenMartel_5_230522#readme"
+}
