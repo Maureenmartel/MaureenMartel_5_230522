@@ -8,7 +8,7 @@ async function getProductsArray() {
 //Fonction qui créé le lien vers la page produit
 function createNewLink(product) {
   let newLink = document.createElement('a')
-  newLink.setAttribute("href", `product.html/?id=${product._id}`)
+  newLink.setAttribute("href", `./product.html?id=${product._id}`)
   return newLink
 }
 
@@ -56,7 +56,7 @@ function createNewCard(product) {
   return a
 }
 
-//création pour chercher les infos de l'api et appelle createNewCard pour chaque produit du tableau
+//création pour chercher les infos de l'api et appeller createNewCard pour chaque produit du tableau
 async function createAllProductsCards() {
   let products = await getProductsArray()
   for (let product of products) {
