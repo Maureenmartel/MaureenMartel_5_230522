@@ -59,7 +59,7 @@ function fillColors(product) {
   }
 }
 
-//Fonction qui attends le résultat de getObjectWithId pour modifier le contenu de la page produit
+//Fonction qui attends le résultat de getObjectWithId -> product, pour modifier le contenu de la page produit
 async function fillProductPage() {
   const product = await getObjectWithId()
   createNewImage(product)
