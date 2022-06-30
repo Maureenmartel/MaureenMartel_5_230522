@@ -1,3 +1,6 @@
+//                       Afficher la page produit                           //
+//--------------------------------------------------------------------------//
+
 //Rechercher l'URL du produit avec son ID
 function getUrlParamsId() {
   const urlRequest = window.location.search
@@ -70,3 +73,115 @@ async function fillProductPage() {
 }
 
 fillProductPage()
+
+//                              Ajouter des produits au panier                                  //
+//----------------------------------------------------------------------------------------------//
+
+//Fonction pour stocker un item dans le localStorage (+ Evite de me répéter et limite les erreurs de synthaxe)
+function saveBasket(basket) {
+  window.localStorage.setItem("basket", JSON.stringify(basket))
+}
+
+//Vérifier la sélection d'une couleur
+function checkColor() {
+  let selectedColor = document.getElementById('colors').value
+  if (selectedColor !== "" ) {
+    return document.getElementById('colors').value
+  } else {
+    return undefined
+  }
+}
+
+//Vérifier la sélection d'une quantité
+function checkQuantity() {
+  let definedQuantity = document.getElementById('quantity').value
+  if (definedQuantity >= 1 && definedQuantity <= 100) {
+    return document.getElementById('quantity').value
+  } else {
+    return undefined
+  }
+}
+
+//Création d'un objet pour stocker la couleur et la quantité et l'ajouter au tableau idProduct
+function pushNewObject(array, newColorAdded, newQuantityAdded) { 
+  let newObject = {
+    color : newColorAdded,                  //sera configurée lors de l'appel de la fonction dans mon eventListener
+    quantity : newQuantityAdded             //sera configurée lors de l'appel de la fonction dans mon eventListener
+  }
+  array.push(newObject)
+}
+
+//Création d'une nouvelle propriété pour push la couleur et la quantité dans mon tableau basket[id]
+function createIdProperty(basket, selectedColor, quantitySelected) { 
+  basket[id] = []
+  pushNewObject(basket[id], selectedColor, quantitySelected)
+}
+
+//Vérifier si la couleur selectionnée n'est pas déjà présente dans le panier (basket)
+function colorAlreadySelected(array, colorFound) {
+  for (let object of array) {
+    if (object.color == colorFound) {
+      return true
+    } else {
+      return false
+    }
+  }
+}
+
+//EventListener du boutton "Ajouter au panier"
+function addToCartEventListener() {
+  let button = document.getElementById('addToCart')
+    button.addEventListener("click", () => {
+      let selectedColor = checkColor()
+      let quantitySelected = checkQuantity()
+      if ((checkColor() && checkQuantity()) !== undefined) {                // Si mes inputs sont corrects
+        if (!window.localStorage.getItem("basket")) {                       // Mon panier n'existe pas
+          let basket = {}                                                   // Création de l'objet basket               
+          createIdProperty(basket, selectedColor, quantitySelected)         // Création de l'id + objet dans basket
+          saveBasket(basket)                                                // Sauvegarde dans le localStorage
+        } else {
+          let basket = JSON.parse(window.localStorage.getItem("basket"))    // Mon panier existe, je le récupère
+          if (!basket.hasOwnProperty(id)) {                                 // Cas n°2 : mon basket ne contient pas de propriété avec le bon id
+            createIdProperty(basket, selectedColor, quantitySelected)
+            saveBasket(basket)
+          } else {
+            if (!colorAlreadySelected(basket[id], selectedColor)) {         // Cas n°3 : mon ID est présent mais la couleur non
+              pushNewObject(basket[id], selectedColor, quantitySelected)    // Ajout de l'objet couleur/quantité au bon id
+              saveBasket(basket)
+            } else {
+              for (let object of basket[id]) {                              // Je parcours mon tableau
+                if (object.color === selectedColor) {                       // Je trouve l'objet dont la couleur correspond
+                  object.quantity = object.quantity += quantitySelected     // J'ajoute la quantité présente à la quantité selectionnée
+                  if (object.quantity > 100) {                              // Je limite ma quantité storée à 100 articles
+                    object.quantity = 100                                   // Je bloque le compteur à 100 
+                  }
+                  saveBasket(basket)                                   
+              }
+            }          
+          }
+        }
+      }
+    } // Si je veux faire quelque chose dans le cas où mes inputs sont incorrects, c'est ici
+  })
+}
+addToCartEventListener()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
