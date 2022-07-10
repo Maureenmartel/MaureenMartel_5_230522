@@ -1,5 +1,5 @@
-//                       Afficher la page produit                           //
-//--------------------------------------------------------------------------//
+//----------------------------- Afficher la page produit ---------------------------------//
+//----------------------------------------------------------------------------------------//
 
 //Rechercher l'URL du produit avec son ID
 function getUrlParamsId() {
@@ -74,7 +74,7 @@ async function fillProductPage() {
 
 fillProductPage()
 
-//                              Ajouter des produits au panier                                  //
+//----------------------------- Ajouter des produits au panier ---------------------------------//
 //----------------------------------------------------------------------------------------------//
 
 //Fonction pour stocker un item dans le localStorage (+ Evite de me répéter et limite les erreurs de synthaxe)
