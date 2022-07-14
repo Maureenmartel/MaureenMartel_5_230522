@@ -43,7 +43,7 @@ function createDivImg(product) {
   divImgCart.appendChild(imgCart)
   imgCart.src = product.imageUrl
   imgCart.alt = product.altTxt
-
+  
   return divImgCart
 }
 
@@ -148,6 +148,8 @@ function createArticles(productArray, product, idIndex) {
         article.appendChild(divImgCart)
         createDivCartContent(article, product, color, quantity)
         sectionCart.appendChild(article)
+        inputDataQuantity()
+        getTotalPrice()
       }
     }
   }
@@ -165,16 +167,34 @@ fillProductPage()
 
 //-------- Gestion de la quantité totale et du prix total du panier ---------//
 
+// Collecte des données de l'input Quantité
+function inputDataQuantity() {
+  // Récupération de la NodeList des éléments du document, correspondant au selecteur css ciblé
+  let inputsValue = document.querySelectorAll(".itemQuantity")
+  let totalQuantity = 0                                         
+  for (let input of inputsValue) {
+    totalQuantity = totalQuantity += Number(input.value)
+    document.getElementById("totalQuantity").innerText = totalQuantity
+  }
+}
 
-// Utiliser Query selector all sur mes inputs
-// Récupérer ma nodeList
-// Utiliser une boucle (for let input of nodeList)
-// let qty = input.value
-// input.closest ( => target l'article le plus proche avec mon data-id)
-// fetch /api/_id ( => pour récupérer mon product.price)
-// let totalPrice = 0
-// totalPrice = totalPrice += (qty * product.price) 
+// Pour chaques articles, collecte des données de l'input Quantité et récupération du prix depuis l'API
+async function getTotalPrice() {
+  let allProductInBasket = document.querySelectorAll("article.cart__item")
+  let totalPrice = 0
+  for (let article of allProductInBasket) {
+    let numberOfProducts = Number(article.querySelector(".itemQuantity").value)
+    let productsId = article.getAttribute("data-id")
+    let product = await getObjectWithId(productsId)
+    let itemPrice = product.price
+    totalPrice = totalPrice += Number(numberOfProducts *= itemPrice)
+    document.getElementById("totalPrice").innerText = totalPrice
+  }
+}
+
+
 // ATTENTION : doit se mettre à jour si modification de la quantité ou suppression d'un article
+// eventListener qui appelle la fonction du dessus
 
 
 
