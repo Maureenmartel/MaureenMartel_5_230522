@@ -1,4 +1,5 @@
-//-------- Afficher le récapitulatif des achats dans la page panier ---------//
+//-------------- API, récupération et sauvegarde du panier, tableaux  --------------//
+//----------------------------------------------------------------------------------//
 
 // Fonction pour récupérer la fiche produit avec l'ID correspondant 
 async function getObjectWithId(id) {
@@ -8,7 +9,12 @@ async function getObjectWithId(id) {
 }
 
 // Récupération de mon panier depuis le localStorage, au cas où il existe
-let basket = JSON.parse(window.localStorage.getItem("basket"))                     
+let basket = JSON.parse(window.localStorage.getItem("basket"))
+
+// Fonction de sauvegarde du panier
+function saveBasket(basket) {
+  window.localStorage.setItem("basket", JSON.stringify(basket))
+}
 
 // Je convertis mon objet basket en tableau, pour pouvoir loop à l'intérieur
 let productArray = []
@@ -16,11 +22,12 @@ for (let elem of Object.keys(basket)) {
   productArray.push(basket[elem])
 }
 
-// Je créer un tableau avec les ID pour récupérer les informations de l'API
+// Création d'un tableau avec les ID pour récupérer les informations de l'API
 // Objects.keys me permets de récupérer les propriétés propres à mon objet basket
 let idArray = Object.keys(basket)
 
-// ---- Construction du DOM avec les infos croisées de l'API et du localStorage ----//
+//----- Construction du DOM avec les infos croisées de l'API et du localStorage ----//
+//----------------------------------------------------------------------------------//
 
 // Déclaration de mon parent dans une constante pour construire mon DOM
 const sectionCart = document.getElementById('cart__items')
@@ -131,6 +138,7 @@ function deleteItem(parent) {
   const deleteProduct = document.createElement('p')
   deleteProduct.className = "deleteItem"
   parent.appendChild(deleteProduct)
+  deleteProduct.innerText = "Supprimer"
 }
 
 //Fonction qui récupére les objets d'un tableau de tableau et qui crée mon article
@@ -148,24 +156,13 @@ function createArticles(productArray, product, idIndex) {
         article.appendChild(divImgCart)
         createDivCartContent(article, product, color, quantity)
         sectionCart.appendChild(article)
-        inputDataQuantity()
-        getTotalPrice()
       }
     }
   }
 }
 
-// Fonction qui appelle toutes mes fonctions pour créer mes articles
-async function fillProductPage() {
-  for (let id of idArray) {
-    let idIndex = idArray.indexOf(id)
-    let product = await getObjectWithId(id)                                                           //enregistre la fiche produit
-    createArticles(productArray, product, idIndex)
-  }
-}
-fillProductPage()
-
-//-------- Gestion de la quantité totale et du prix total du panier ---------//
+//------------ Gestion de la quantité totale et du prix total du panier ------------//
+//----------------------------------------------------------------------------------//
 
 // Collecte des données de l'input Quantité
 function inputDataQuantity() {
@@ -178,7 +175,7 @@ function inputDataQuantity() {
   }
 }
 
-// Pour chaques articles, collecte des données de l'input Quantité et récupération du prix depuis l'API
+// Pour chaques articles, collecte des données de l'input Quantité et infos du prix depuis l'API
 async function getTotalPrice() {
   let allProductInBasket = document.querySelectorAll("article.cart__item")
   let totalPrice = 0
@@ -192,9 +189,80 @@ async function getTotalPrice() {
   }
 }
 
+//-------------- Modification de la quantité et mise à jour du prix ----------------//
+//----------------------------------------------------------------------------------//
 
-// ATTENTION : doit se mettre à jour si modification de la quantité ou suppression d'un article
-// eventListener qui appelle la fonction du dessus
+function quantityChange() {
+  //1 Je déclare une variable qui va indiquer sur quel selecteur CSS va s'effectuer le changement
+  let quantityInputs = document.querySelectorAll("input.itemQuantity")
+  for (let input of quantityInputs) {
+    input.addEventListener('change', () => {
+      // Mise à jour de la quantité
+      inputDataQuantity()
+      // Mise à jour du prix
+      getTotalPrice()
+    })
+  }
+}
+
+//-------------------------- Suppression d'un article ------------------------------//
+//----------------------------------------------------------------------------------//
+
+function removeProductFromBasket() {
+  let deleteButtons = document.querySelectorAll("p.deleteItem")
+  for (let deleteButton of deleteButtons) {
+    deleteButton.addEventListener('click', () => {
+      let articleToRemoveTargeted = deleteButton.closest('article.cart__item')
+      let articleIdToDelete = articleToRemoveTargeted.getAttribute("data-id")
+      let articleColorToDelete = articleToRemoveTargeted.getAttribute("data-color")
+      let basket = JSON.parse(window.localStorage.getItem("basket"))
+      let targetedProductsToDelete = basket[articleIdToDelete]
+      for (let targetedProductToDelete of targetedProductsToDelete) {
+        if (targetedProductToDelete.color == articleColorToDelete) {
+          let indexOfTargetDelete = targetedProductsToDelete.indexOf(targetedProductToDelete)
+          targetedProductsToDelete.splice(indexOfTargetDelete, 1)
+          if (targetedProductsToDelete.length == 0) {
+            delete basket[`${articleIdToDelete}`]
+          }
+          window.localStorage.setItem('basket', JSON.stringify(basket))
+          articleToRemoveTargeted.parentNode.removeChild(articleToRemoveTargeted)
+        }
+      }
+      inputDataQuantity()
+      getTotalPrice()
+    })
+  }
+}
+
+//------------------------------ Gestion du panier ---------------------------------//
+//----------------------------------------------------------------------------------//
+
+// Fonction qui vérifie que les indices de mes tableaux correspondent, puis crée mes articles
+async function fillProductPage() {
+  for (let id of idArray) {
+    let idIndex = idArray.indexOf(id)
+    let product = await getObjectWithId(id)                   
+    createArticles(productArray, product, idIndex)
+  }
+}
+
+// Fonction qui attend la création de l'article, puis met à jour le panier à chaque modification
+async function manageBasket() {
+  await fillProductPage()
+  inputDataQuantity()
+  getTotalPrice()
+  quantityChange()
+  removeProductFromBasket()
+  //saveBasket() après modif du panier et reload de la page ne fonctionne pas
+}
+manageBasket()
+
+//------------ Mise en place des regex pour la validation de formulaire ------------//
+//----------------------------------------------------------------------------------//
+
+
+//------------------------ Affichage du numéro de commande -------------------------//
+//----------------------------------------------------------------------------------//
 
 
 
