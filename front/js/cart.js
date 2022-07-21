@@ -1,38 +1,38 @@
 //-------------- API, récupération et sauvegarde du panier, tableaux  --------------//
 //----------------------------------------------------------------------------------//
 
-// Fonction pour récupérer la fiche produit avec l'ID correspondant 
+// --- Fonction pour récupérer la fiche produit avec l'ID correspondant 
 async function getObjectWithId(id) {
   return await fetch(`http://localhost:3000/api/products/${id}`)
     .then((response) => response.json())
     .catch((error) => console.log(error))
 }
 
-// Récupération de mon panier depuis le localStorage, au cas où il existe
+// --- Récupération de mon panier depuis le localStorage, au cas où il existe
 let basket = JSON.parse(window.localStorage.getItem("basket"))
 
-// Fonction de sauvegarde du panier
+// --- Fonction de sauvegarde du panier
 function saveBasket(basket) {
   window.localStorage.setItem("basket", JSON.stringify(basket))
 }
 
-// Je convertis mon objet basket en tableau, pour pouvoir loop à l'intérieur
+// --- Je convertis mon objet basket en tableau, pour pouvoir loop à l'intérieur
 let productArray = []
 for (let elem of Object.keys(basket)) {
   productArray.push(basket[elem])
 }
 
-// Création d'un tableau avec les ID pour récupérer les informations de l'API
+// --- Création d'un tableau avec les ID pour récupérer les informations de l'API
 // Objects.keys me permets de récupérer les propriétés propres à mon objet basket
 let idArray = Object.keys(basket)
 
 //----- Construction du DOM avec les infos croisées de l'API et du localStorage ----//
 //----------------------------------------------------------------------------------//
 
-// Déclaration de mon parent dans une constante pour construire mon DOM
+// --- Déclaration de mon parent dans une constante pour construire mon DOM
 const sectionCart = document.getElementById('cart__items')
 
-// Création de l'article
+// --- Création de l'article
 function createNewArticle(product, color, quantity) {
   let sectionArticle = document.createElement('article')                
   sectionArticle.className = "cart__item"
@@ -41,7 +41,7 @@ function createNewArticle(product, color, quantity) {
   return sectionArticle
 }
 
-// Création de la div qui accueille l'image + Affichage de l'image et de son alt depuis l'API
+// --- Création de la div qui accueille l'image + Affichage de l'image et de son alt depuis l'API
 function createDivImg(product) {
   const divImgCart = document.createElement('div')
   divImgCart.className = "cart__item__img"
@@ -54,7 +54,7 @@ function createDivImg(product) {
   return divImgCart
 }
 
-// Création de la div "cart__item__content" + Appel des éléments à afficher
+// --- Création de la div "cart__item__content" + Appel des éléments à afficher
 function createDivCartContent(parent, product, color, quantity) {
   const divCartContent = document.createElement('div')
   parent.appendChild(divCartContent)
@@ -63,7 +63,7 @@ function createDivCartContent(parent, product, color, quantity) {
   divCartContentSettings(divCartContent, quantity)
 }
 
-// Création de la div "cart__item__content__titlePrice" + Appel des éléments à afficher
+// --- Création de la div "cart__item__content__titlePrice" + Appel des éléments à afficher
 function divCartContentDescription(parent, product, color) {
   const cartContentDescription = document.createElement('div')
   parent.appendChild(cartContentDescription)
@@ -72,7 +72,7 @@ function divCartContentDescription(parent, product, color) {
   createPriceProduct(product, cartContentDescription)
 }
 
-// Affichage du nom du produit depuis l'API + Affichage de la couleur choisie depuis le localStorage
+// --- Affichage du nom du produit depuis l'API + Affichage de la couleur choisie depuis le localStorage
 function fillDescriptionOfProduct(product, color, parent) {
   const nameOfProduct = document.createElement('h2')
   parent.appendChild(nameOfProduct)
@@ -83,14 +83,14 @@ function fillDescriptionOfProduct(product, color, parent) {
   colorOfProduct.innerText = color
 }
 
-// Affichage du prix du produit depuis l'API
+// --- Affichage du prix du produit depuis l'API
 function createPriceProduct(product, parent) {
   const priceOfProduct = document.createElement('p')
   parent.appendChild(priceOfProduct)
   priceOfProduct.innerText = product.price + " €"
 }
 
-// Création de la div "cart__item__content__settings" + Appel des éléments à afficher
+// --- Création de la div "cart__item__content__settings" + Appel des éléments à afficher
 function divCartContentSettings(parent, quantity) {
   const cartContentSettings = document.createElement('div')
   parent.appendChild(cartContentSettings)
@@ -99,7 +99,7 @@ function divCartContentSettings(parent, quantity) {
   divDeleteItem(cartContentSettings)
 }
 
-// Création de la div + Affichage de la quantité voulue depuis le localStorage
+// --- Création de la div + Affichage de la quantité voulue depuis le localStorage
 function createProductQuantity(parent, quantity) {
   const divProductQuantity = document.createElement('div')
   parent.appendChild(divProductQuantity)
@@ -114,7 +114,7 @@ function createProductQuantity(parent, quantity) {
   divProductQuantity.appendChild(input)
 }
 
-// Création de l'input Quantité et de ses paramètres
+// --- Création de l'input Quantité et de ses paramètres
 function createQuantityInput(quantity) {
   const inputQuantity = document.createElement('input')
   inputQuantity.type ="number"
@@ -141,7 +141,7 @@ function deleteItem(parent) {
   deleteProduct.innerText = "Supprimer"
 }
 
-//Fonction qui récupére les objets d'un tableau de tableau et qui crée mon article
+// --- Fonction qui récupére les objets d'un tableau de tableau et qui crée mon article
 function createArticles(productArray, product, idIndex) {
   for (let array of productArray) {
     // Je store l'index de mon tableau pour m'assurer que les infos correspondent au bon id
@@ -164,7 +164,7 @@ function createArticles(productArray, product, idIndex) {
 //------------ Gestion de la quantité totale et du prix total du panier ------------//
 //----------------------------------------------------------------------------------//
 
-// Collecte des données de l'input Quantité
+// --- Collecte des données de l'input Quantité
 function inputDataQuantity() {
   // Récupération de la NodeList des éléments du document, correspondant au selecteur css ciblé
   let inputsValue = document.querySelectorAll(".itemQuantity")
@@ -175,7 +175,7 @@ function inputDataQuantity() {
   }
 }
 
-// Pour chaques articles, collecte des données de l'input Quantité et infos du prix depuis l'API
+// --- Pour chaques articles, collecte des données de l'input Quantité et infos du prix depuis l'API
 async function getTotalPrice() {
   let allProductInBasket = document.querySelectorAll("article.cart__item")
   let totalPrice = 0
@@ -195,14 +195,26 @@ async function getTotalPrice() {
 function quantityChange() {
   //1 Je déclare une variable qui va indiquer sur quel selecteur CSS va s'effectuer le changement
   let quantityInputs = document.querySelectorAll("input.itemQuantity")
-  for (let input of quantityInputs) {
-    input.addEventListener('change', () => {
-      // Mise à jour de la quantité
-      inputDataQuantity()
-      // Mise à jour du prix
-      getTotalPrice()
-    })
-  }
+  if (quantityInputs !== []) {  //Si j'ai un article dans mon panier
+    for (let input of quantityInputs) {
+      input.addEventListener('change', () => {
+        // Mise à jour de la quantité
+        inputDataQuantity()
+        // Mise à jour du prix
+        getTotalPrice()
+        let articleChange = input.closest('article.cart__item')
+        let colorChange = articleChange.getAttribute("data-color")
+        let idChange = articleChange.getAttribute("data-id")
+        let basket = JSON.parse(window.localStorage.getItem("basket"))
+        for (let item of basket[idChange]) {
+          if (item.color === colorChange && (input.value <= 100 && input.value >= 1)) {
+            item.quantity = input.value
+            saveBasket(basket)
+          }
+        }
+      })
+    }
+  } 
 }
 
 //-------------------------- Suppression d'un article ------------------------------//
@@ -218,13 +230,13 @@ function removeProductFromBasket() {
       let basket = JSON.parse(window.localStorage.getItem("basket"))
       let targetedProductsToDelete = basket[articleIdToDelete]
       for (let targetedProductToDelete of targetedProductsToDelete) {
-        if (targetedProductToDelete.color == articleColorToDelete) {
+        if (targetedProductToDelete.color === articleColorToDelete) {
           let indexOfTargetDelete = targetedProductsToDelete.indexOf(targetedProductToDelete)
           targetedProductsToDelete.splice(indexOfTargetDelete, 1)
           if (targetedProductsToDelete.length == 0) {
             delete basket[`${articleIdToDelete}`]
           }
-          window.localStorage.setItem('basket', JSON.stringify(basket))
+          saveBasket(basket)
           articleToRemoveTargeted.parentNode.removeChild(articleToRemoveTargeted)
         }
       }
@@ -237,7 +249,7 @@ function removeProductFromBasket() {
 //------------------------------ Gestion du panier ---------------------------------//
 //----------------------------------------------------------------------------------//
 
-// Fonction qui vérifie que les indices de mes tableaux correspondent, puis crée mes articles
+// --- Fonction qui vérifie que les indices de mes tableaux correspondent, puis crée mes articles
 async function fillProductPage() {
   for (let id of idArray) {
     let idIndex = idArray.indexOf(id)
@@ -246,26 +258,93 @@ async function fillProductPage() {
   }
 }
 
-// Fonction qui attend la création de l'article, puis met à jour le panier à chaque modification
+// --- Fonction qui attend la création de l'article, puis met à jour le panier à chaque modification
 async function manageBasket() {
   await fillProductPage()
   inputDataQuantity()
   getTotalPrice()
   quantityChange()
   removeProductFromBasket()
-  //saveBasket() après modif du panier et reload de la page ne fonctionne pas
 }
 manageBasket()
 
-//------------ Mise en place des regex pour la validation de formulaire ------------//
+//------------- Constantes nécessaires pour la validation de formulaire ------------//
 //----------------------------------------------------------------------------------//
 
+// --- Constante pour indiquer l'endroit où mes regex interviennent
+const formValidaton = document.querySelector('form.cart__order__form')
+
+// --- Constante pour cibler l'input "submit"
+const formSubmit = document.getElementById('order')
+
+// --- Constantes pour cibler les différents inputs du formulaire
+const firstNameInput = document.getElementById('firstName')
+const lastNameInput = document.getElementById('lastName')
+const addressInput = document.getElementById('address')
+const cityInput = document.getElementById('city')
+const emailInput = document.getElementById('email')
+
+// --- Constantes qui contiennent les regex de vérification de formulaire
+const nameRegex = /^([a-zéèàç]+){1}([\S\-\1])*$/
+const addressRegex = /^([0-9]{1,4})\ {1}([^\t\n\r][a-zéèàçùA-Z0-9\s\-\,\.]+)$/
+const cityRegex = /([0-9]{5}){1}\s([A-Za-zéèàçù]+){1}([\S\-\2])*$/
+const emailRegex = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+
+//----------------- Validation du formulaire + messages d'erreur -------------------//
+//----------------------------------------------------------------------------------//
+
+// --- Vérification de l'input "firstName" et ajout du message d'erreur
+firstNameInput.addEventListener("input", () => {
+  // Si la valeur de mon input est invalide, affichage d'un message d'erreur personnalisé
+  if (nameRegex.test(firstNameInput.value) == false) {
+    document.getElementById('firstNameErrorMsg').innerText = " Votre prénom ne doit contenir que des lettres, tiret autorisé pour les prénoms composés." 
+  } else {
+    document.getElementById('firstNameErrorMsg').innerText = ""
+  }
+})
+
+// --- Vérification de l'input "lastName" et ajout du message d'erreur
+lastNameInput.addEventListener("input", () => {
+  if (nameRegex.test(lastNameInput.value) == false) {
+    document.getElementById('lastNameErrorMsg').innerText = " Votre nom ne doit contenir que des lettres, tiret autorisé pour les prénoms composés."
+  } else {
+    document.getElementById('lastNameErrorMsg').innerText = ""
+  }
+})
+
+// --- Vérification de l'input "address" et ajout du message d'erreur
+addressInput.addEventListener("input", () => {
+  if (addressRegex.test(addressInput.value) == false) {
+    document.getElementById('addressErrorMsg').innerText = " Votre addresse doit contenir le numéro suivi du nom de la voie"
+  } else {
+    document.getElementById('addressErrorMsg').innerText = ""
+  }
+})
+
+// --- Vérification de l'input "city" et ajout du message d'erreur
+cityInput.addEventListener("input", () => {
+  if (cityRegex.test(cityInput.value) == false) {
+    document.getElementById('cityErrorMsg').innerText = " Veuillez indiquer d'abord votre code postal puis le nom de votre ville."
+  } else {
+    document.getElementById('cityErrorMsg').innerText = ""
+  }
+})
+
+// --- Vérification de l'input "email" et ajout du message d'erreur
+emailInput.addEventListener("input", () => {
+  if (emailRegex.test(emailInput.value) == false) {
+    document.getElementById('emailErrorMsg').innerText = " Veuillez saisir un email correct. (Exemples: kanap@contact.fr, infos.kanap@contact.com, infos-kanap@contact.net)"
+  } else {
+    document.getElementById('emailErrorMsg').innerText = ""
+  }
+})
 
 //------------------------ Affichage du numéro de commande -------------------------//
 //----------------------------------------------------------------------------------//
 
 
-
+//-------------- Ajout d'une pop-up de confirmation d'ajout au panier --------------//
+//----------------------------------------------------------------------------------//
 
 
 
