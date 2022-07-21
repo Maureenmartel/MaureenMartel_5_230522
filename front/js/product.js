@@ -1,7 +1,7 @@
-//----------------------------- Afficher la page produit ---------------------------------//
-//----------------------------------------------------------------------------------------//
+//---------------------------- Afficher la page produit ----------------------------//
+//----------------------------------------------------------------------------------//
 
-//Rechercher l'URL du produit avec son ID
+// --- Rechercher l'URL du produit avec son ID
 function getUrlParamsId() {
   const urlRequest = window.location.search
   const urlParameters = new URLSearchParams(urlRequest)
@@ -9,17 +9,17 @@ function getUrlParamsId() {
   return id
 }
 
-//Constante pour stocker le résultat de l'appel à l'API
+// --- Constante pour stocker le résultat de l'appel à l'API
 const id = getUrlParamsId()
 
-//Fonction pour récupérer la fiche produit avec l'ID correspondant
+// --- Fonction pour récupérer la fiche produit avec l'ID correspondant
 async function getObjectWithId() {
   return await fetch(`http://localhost:3000/api/products/${id}`)
     .then((response) => response.json())
     .catch((error) => console.log(error))
 }
 
-//Fonction pour créer une image (src + alt)
+// --- Fonction pour créer une image (src + alt)
 function createNewImage(product) {
   let newImage = document.createElement('img')
   newImage.src = product.imageUrl
@@ -27,25 +27,25 @@ function createNewImage(product) {
   document.querySelector(".item__img").appendChild(newImage)
 }
 
-//Fonction pour modifier le contenu de l'id "title"
+// --- Fonction pour modifier le contenu de l'id "title"
 function fillNewTitle(product) {
   let newTitle = document.getElementById('title')
   newTitle.innerText = product.name
 }
 
-//Fonction pour modifier le contenu de l'id "price"
+// --- Fonction pour modifier le contenu de l'id "price"
 function fillNewPrice(product) {
   let newPrice = document.getElementById('price')
   newPrice.innerText = product.price
 }
 
-//Fonction pour modifier le contenu de l'id "description"
+// --- Fonction pour modifier le contenu de l'id "description"
 function fillNewDescription(product) {
   let newDescription = document.getElementById('description')
   newDescription.innerText = product.description
 }
 
-//Fonction pour créer une option (choix des coloris)
+// --- Fonction pour créer une option (choix des coloris)
 function createNewOption(color) {
   let newOption = document.createElement('option')
   newOption.setAttribute("value", color)
@@ -54,7 +54,7 @@ function createNewOption(color) {
   return newOption
 }
 
-//Fonction pour ajouter les coloris disponibles des différents articles
+// --- Fonction pour ajouter les coloris disponibles des différents articles
 function fillColors(product) {
   for (let color of product.colors) {
     let newColor = createNewOption(color)
@@ -62,7 +62,7 @@ function fillColors(product) {
   }
 }
 
-//Fonction qui attends le résultat de getObjectWithId -> product, pour modifier le contenu de la page produit
+// --- Fonction qui attends le résultat de getObjectWithId -> product, pour modifier le contenu de la page produit
 async function fillProductPage() {
   const product = await getObjectWithId()
   createNewImage(product)
@@ -74,15 +74,15 @@ async function fillProductPage() {
 
 fillProductPage()
 
-//----------------------------- Ajouter des produits au panier ---------------------------------//
-//----------------------------------------------------------------------------------------------//
+//-------------------------- Ajout des produits au panier --------------------------//
+//----------------------------------------------------------------------------------//
 
-//Fonction pour stocker un item dans le localStorage (+ Evite de me répéter et limite les erreurs de synthaxe)
+// --- Fonction pour stocker un item dans le localStorage (+ Evite de me répéter et limite les erreurs de synthaxe)
 function saveBasket(basket) {
   window.localStorage.setItem("basket", JSON.stringify(basket))
 }
 
-//Vérifier la sélection d'une couleur
+// --- Vérifier la sélection d'une couleur
 function checkColor() {
   let selectedColor = document.getElementById('colors').value
   if (selectedColor !== "" ) {
@@ -92,7 +92,7 @@ function checkColor() {
   }
 }
 
-//Vérifier la sélection d'une quantité
+// --- Vérifier la sélection d'une quantité
 function checkQuantity() {
   let definedQuantity = document.getElementById('quantity').value
   if (definedQuantity >= 1 && definedQuantity <= 100) {
@@ -102,22 +102,22 @@ function checkQuantity() {
   }
 }
 
-//Création d'un objet pour stocker la couleur et la quantité et l'ajouter au tableau idProduct
+// --- Création d'un objet pour stocker la couleur et la quantité et l'ajouter au tableau idProduct
 function pushNewObject(array, newColorAdded, newQuantityAdded) { 
   let newObject = {
     color : newColorAdded,                  //sera configurée lors de l'appel de la fonction dans mon eventListener
-    quantity : newQuantityAdded             //sera configurée lors de l'appel de la fonction dans mon eventListener
+    quantity : Number(newQuantityAdded)     //sera configurée lors de l'appel de la fonction dans mon eventListener
   }
   array.push(newObject)
 }
 
-//Création d'une nouvelle propriété pour push la couleur et la quantité dans mon tableau basket[id]
+// --- Création d'une nouvelle propriété pour push la couleur et la quantité dans mon tableau basket[id]
 function createIdProperty(basket, selectedColor, quantitySelected) { 
   basket[id] = []
   pushNewObject(basket[id], selectedColor, quantitySelected)
 }
 
-//Vérifier si la couleur selectionnée n'est pas déjà présente dans le panier (basket)
+// --- Vérifie si la couleur selectionnée n'est pas déjà présente dans le panier (basket)
 function colorAlreadySelected(array, colorFound) {
   for (let object of array) {
     if (object.color == colorFound) {
@@ -128,7 +128,9 @@ function colorAlreadySelected(array, colorFound) {
   }
 }
 
-//EventListener du boutton "Ajouter au panier"
+//------------------ EventListener de bouton "Ajouter au panier" -------------------//
+//----------------------------------------------------------------------------------//
+
 function addToCartEventListener() {
   let button = document.getElementById('addToCart')
     button.addEventListener("click", () => {
@@ -151,7 +153,7 @@ function addToCartEventListener() {
             } else {
               for (let object of basket[id]) {                              // Je parcours mon tableau
                 if (object.color === selectedColor) {                       // Je trouve l'objet dont la couleur correspond
-                  object.quantity = object.quantity += quantitySelected     // J'ajoute la quantité présente à la quantité selectionnée
+                  object.quantity = object.quantity += Number(quantitySelected) // J'ajoute la quantité présente à la quantité selectionnée
                   if (object.quantity > 100) {                              // Je limite ma quantité storée à 100 articles
                     object.quantity = 100                                   // Je bloque le compteur à 100 
                   }
@@ -165,6 +167,10 @@ function addToCartEventListener() {
   })
 }
 addToCartEventListener()
+
+//-------------- Ajout d'une pop-up de confirmation d'ajout au panier --------------//
+//----------------------------------------------------------------------------------//
+
 
 
 
