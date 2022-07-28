@@ -339,12 +339,128 @@ emailInput.addEventListener("input", () => {
   }
 })
 
-//------------------------ Affichage du numéro de commande -------------------------//
+//------------- Envoi des infos formulaire et du panier au back-end ----------------//
 //----------------------------------------------------------------------------------//
 
+// Fonction qui vérifie si mon tableau est vide ou contient déjà un produit
+function isArrayEmpty(array) {
+  if (array.length > 0) { 
+    return array
+  } else {
+    return undefined
+  } 
+}
 
-//-------------- Ajout d'une pop-up de confirmation d'ajout au panier --------------//
-//----------------------------------------------------------------------------------//
+// Création du tableau de produits et ajout des articles au tableau
+function createIdsProductsArray(nodeList) {
+  // Je créer un tableau pour stocker les items présents dans mon panier
+  let articlesIdAddedToCart = [] 
+  // Pour chaque article trouvé dans les articles ajoutés au panier
+  for (let articleAddedToCart of nodeList) { 
+    // J'indique l'endroit où les infos doivent être collectées et je selectionne la value
+    let entryValueItemQuantity = articleAddedToCart.querySelector("input").value
+    // Je récupère l'id du produit trouvé
+    let productId = articleAddedToCart.getAttribute('data-id')
+    // Si l'id n'est pas déjà présente dans mon tableau et que mon input n'est pas à zero, alors je push l'id dans mon tableau
+    if ((!articlesIdAddedToCart.includes(productId)) && entryValueItemQuantity > 0) {
+      articlesIdAddedToCart.push(productId)
+    }
+  }
+  if (isArrayEmpty(articlesIdAddedToCart)) {
+    return articlesIdAddedToCart
+  } else {
+    return undefined
+  }
+}
+
+// Vérification de tous les inputs de coordonnées
+function formValidation() {
+  if (nameRegex.test(firstNameInput.value) && nameRegex.test(lastNameInput.value) && addressRegex.test(addressInput.value) && cityRegex.test(cityInput.value) && emailRegex.test(emailInput.value)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+// Création du compte utilisateur !!! a appeler sur mon eventlistener "commander"
+function createNewUser() {
+  if (formValidation()) {
+    let contact = {
+      firstName : firstNameInput.value,
+      lastName : lastNameInput.value,
+      address : addressInput.value,
+      city : cityInput.value,
+      email : emailInput.value,
+    }
+    return contact
+  } else {
+    return undefined
+  }
+}
+
+// Création de la commande
+function orderCreation(articlesAddedToCart) {
+  console.log(articlesAddedToCart)
+  let productsIdsArray = createIdsProductsArray(articlesAddedToCart)
+  let user = createNewUser()
+  // Si j'ai bien des produits dans mon panier et que mes inputs de formulaire sont correctement saisis
+  if ((productsIdsArray && user) != undefined) {
+    // Je crée un objet pour stocker les informations utilisateurs + un tableau d'ID (attention, le back-end vérifie que toutes les ID existent)
+    let order = {
+      contact: user,
+      products : []
+    }
+    // Je push chaque élément dans mon tableau
+    for (let article of productsIdsArray) {
+      order.products.push(article)
+    }
+    // Je retourne ma commande
+    return order
+  } else {
+    // Me retourne une erreur
+    return undefined
+  }
+}
+
+// Fonction Post de l'objet et récupération de l'orderId
+async function retrieveOrderId(order) {
+  return fetch (`http://localhost:3000/api/products/order`, {
+    method : "POST",
+    headers : {
+      "Accept" : "application/json",
+      "Content-type" : "application/json"
+    },
+    body : order
+  })
+  .then((response) => response.json())
+  .catch((error) => console.log(error))
+}
+
+// Fonction d'envoi du formulaire si toutes les vérifications sont correctes
+function sendBasketOrder() {
+  let btnCommand = document.getElementById("order")
+  const elemParent = btnCommand.closest('form')
+  btnCommand.addEventListener('click', async (event) => {
+    event.preventDefault()
+    const articlesAddedToCart = document.querySelectorAll("article.cart__item")
+    if (orderCreation(articlesAddedToCart) != undefined) {
+      let order = JSON.stringify(orderCreation(articlesAddedToCart))
+      let orderComplete = await retrieveOrderId(order)
+      console.log(orderComplete)
+      let orderId = orderComplete.orderId
+      window.localStorage.removeItem('basket')
+      window.location.replace(`./confirmation.html?order-id=${orderId}`)
+    } else {
+      // Pop-up alert dans le cas où le panier est vide et/ou le formulaire n'est pas rempli correctement
+      window.alert("Veuillez vérifier vos informations de contact, ou que votre panier contient au moins un article.")
+    }
+  })
+}
+sendBasketOrder()
+
+
+
+
 
 
 
