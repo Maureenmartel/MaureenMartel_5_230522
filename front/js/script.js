@@ -1,3 +1,7 @@
+//----------------------------------------------------------------------------------//
+//------------------------- Création de la page d'accueil --------------------------//
+//----------------------------------------------------------------------------------//
+
 // --- Appel de l'api + reponse tranformée au format json
 async function getProductsArray() {
   return await fetch('http://localhost:3000/api/products')
@@ -37,7 +41,7 @@ function createNewP(product) {
 }
 
 // --- Fonction qui collecte img, h, p et les insère dans un nouvel article
-function createNewArticle(product) { // Puisque ma fonction en appelle d'autres qui ont des paramètres, je doit lui donner aussi
+function createNewArticle(product) { 
   let article = document.createElement('article')
   let img = createNewImg(product)
   let h = createNewTitle(product)
@@ -61,8 +65,7 @@ async function createAllProductsCards() {
   let products = await getProductsArray()
   for (let product of products) {
     let newCard = createNewCard(product)
-    document.getElementById('items').appendChild(newCard)
-    //document.getElementById('items').appendChild(createNewCard(product))  //Si je veux le faire en une seule ligne.
+    document.getElementById('items').appendChild(newCard) 
   }
 }
 createAllProductsCards()

@@ -1,3 +1,4 @@
+//----------------------------------------------------------------------------------//
 //-------------- API, récupération et sauvegarde du panier, tableaux  --------------//
 //----------------------------------------------------------------------------------//
 
@@ -26,6 +27,7 @@ for (let elem of Object.keys(basket)) {
 // Objects.keys me permets de récupérer les propriétés propres à mon objet basket
 let idArray = Object.keys(basket)
 
+//----------------------------------------------------------------------------------//
 //----- Construction du DOM avec les infos croisées de l'API et du localStorage ----//
 //----------------------------------------------------------------------------------//
 
@@ -127,6 +129,7 @@ function createQuantityInput(quantity) {
   return inputQuantity
 }
 
+// --- Création de la div et du bouton "supprimer" 
 function divDeleteItem(parent) {
   const divDelete = document.createElement('div')
   divDelete.className = "cart__item__content__settings__delete"
@@ -161,12 +164,13 @@ function createArticles(productArray, product, idIndex) {
   }
 }
 
+//----------------------------------------------------------------------------------//
 //------------ Gestion de la quantité totale et du prix total du panier ------------//
 //----------------------------------------------------------------------------------//
 
 // --- Collecte des données de l'input Quantité
 function inputDataQuantity() {
-  // Récupération de la NodeList des éléments du document, correspondant au selecteur css ciblé
+  // Récupération de la NodeList des éléments du document, correspondant au sélecteur CSS ciblé
   let inputsValue = document.querySelectorAll(".itemQuantity")
   let totalQuantity = 0                                         
   for (let input of inputsValue) {
@@ -175,7 +179,7 @@ function inputDataQuantity() {
   }
 }
 
-// --- Pour chaques articles, collecte des données de l'input Quantité et infos du prix depuis l'API
+// --- Pour chaque article, collecte des données de l'input Quantité et infos du prix depuis l'API
 async function getTotalPrice() {
   let allProductInBasket = document.querySelectorAll("article.cart__item")
   let totalPrice = 0
@@ -189,11 +193,12 @@ async function getTotalPrice() {
   }
 }
 
+//----------------------------------------------------------------------------------//
 //-------------- Modification de la quantité et mise à jour du prix ----------------//
 //----------------------------------------------------------------------------------//
 
 function quantityChange() {
-  //1 Je déclare une variable qui va indiquer sur quel selecteur CSS va s'effectuer le changement
+  // Je déclare une variable qui va indiquer sur quel sélecteur CSS va s'effectuer le changement
   let quantityInputs = document.querySelectorAll("input.itemQuantity")
   if (quantityInputs !== []) {  //Si j'ai un article dans mon panier
     for (let input of quantityInputs) {
@@ -217,6 +222,7 @@ function quantityChange() {
   } 
 }
 
+//----------------------------------------------------------------------------------//
 //-------------------------- Suppression d'un article ------------------------------//
 //----------------------------------------------------------------------------------//
 
@@ -246,6 +252,7 @@ function removeProductFromBasket() {
   }
 }
 
+//----------------------------------------------------------------------------------//
 //------------------------------ Gestion du panier ---------------------------------//
 //----------------------------------------------------------------------------------//
 
@@ -268,6 +275,7 @@ async function manageBasket() {
 }
 manageBasket()
 
+//----------------------------------------------------------------------------------//
 //------------- Constantes nécessaires pour la validation de formulaire ------------//
 //----------------------------------------------------------------------------------//
 
@@ -290,6 +298,7 @@ const addressRegex = /^([0-9]{1,4})\ {1}([^\t\n\r][a-zéèàçùA-Z0-9\s\-\,\.]+
 const cityRegex = /([0-9]{5}){1}\s([A-Za-zéèàçù]+){1}([\S\-\2])*$/
 const emailRegex = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
 
+//----------------------------------------------------------------------------------//
 //----------------- Validation du formulaire + messages d'erreur -------------------//
 //----------------------------------------------------------------------------------//
 
@@ -339,10 +348,11 @@ emailInput.addEventListener("input", () => {
   }
 })
 
+//----------------------------------------------------------------------------------//
 //------------- Envoi des infos formulaire et du panier au back-end ----------------//
 //----------------------------------------------------------------------------------//
 
-// Fonction qui vérifie si mon tableau est vide ou contient déjà un produit
+// --- Fonction qui vérifie si mon tableau est vide ou contient déjà un produit
 function isArrayEmpty(array) {
   if (array.length > 0) { 
     return array
@@ -351,11 +361,10 @@ function isArrayEmpty(array) {
   } 
 }
 
-// Création du tableau de produits et ajout des articles au tableau
+// --- Création du tableau de produits et ajout des articles au tableau
 function createIdsProductsArray(nodeList) {
-  // Je créer un tableau pour stocker les items présents dans mon panier
+  // Création d'un tableau pour stocker les items présents dans mon panier
   let articlesIdAddedToCart = [] 
-  // Pour chaque article trouvé dans les articles ajoutés au panier
   for (let articleAddedToCart of nodeList) { 
     // J'indique l'endroit où les infos doivent être collectées et je selectionne la value
     let entryValueItemQuantity = articleAddedToCart.querySelector("input").value
@@ -373,7 +382,7 @@ function createIdsProductsArray(nodeList) {
   }
 }
 
-// Vérification de tous les inputs de coordonnées
+// --- Vérification de tous les inputs de coordonnées
 function formValidation() {
   if (nameRegex.test(firstNameInput.value) && nameRegex.test(lastNameInput.value) && addressRegex.test(addressInput.value) && cityRegex.test(cityInput.value) && emailRegex.test(emailInput.value)) {
     return true
@@ -382,7 +391,7 @@ function formValidation() {
   }
 }
 
-// Création du compte utilisateur !!! a appeler sur mon eventlistener "commander"
+// --- Création du compte utilisateur
 function createNewUser() {
   if (formValidation()) {
     let contact = {
@@ -398,31 +407,28 @@ function createNewUser() {
   }
 }
 
-// Création de la commande
+// --- Création de la commande
 function orderCreation(articlesAddedToCart) {
   console.log(articlesAddedToCart)
   let productsIdsArray = createIdsProductsArray(articlesAddedToCart)
   let user = createNewUser()
   // Si j'ai bien des produits dans mon panier et que mes inputs de formulaire sont correctement saisis
   if ((productsIdsArray && user) != undefined) {
-    // Je crée un objet pour stocker les informations utilisateurs + un tableau d'ID (attention, le back-end vérifie que toutes les ID existent)
+    // Je crée un objet pour stocker les informations utilisateurs + un tableau d'ID
     let order = {
       contact: user,
       products : []
     }
-    // Je push chaque élément dans mon tableau
     for (let article of productsIdsArray) {
       order.products.push(article)
     }
-    // Je retourne ma commande
     return order
   } else {
-    // Me retourne une erreur
     return undefined
   }
 }
 
-// Fonction Post de l'objet et récupération de l'orderId
+// --- Fonction Post de l'objet et récupération de l'orderId
 async function retrieveOrderId(order) {
   return fetch (`http://localhost:3000/api/products/order`, {
     method : "POST",
@@ -436,7 +442,7 @@ async function retrieveOrderId(order) {
   .catch((error) => console.log(error))
 }
 
-// Fonction d'envoi du formulaire si toutes les vérifications sont correctes
+// --- Fonction d'envoi du formulaire si toutes les vérifications sont correctes
 function sendBasketOrder() {
   let btnCommand = document.getElementById("order")
   const elemParent = btnCommand.closest('form')
@@ -446,9 +452,10 @@ function sendBasketOrder() {
     if (orderCreation(articlesAddedToCart) != undefined) {
       let order = JSON.stringify(orderCreation(articlesAddedToCart))
       let orderComplete = await retrieveOrderId(order)
-      console.log(orderComplete)
       let orderId = orderComplete.orderId
+      // Suppression du panier après validation de la commande
       window.localStorage.removeItem('basket')
+      // Suppression de l'URL du panier de l'historique du document
       window.location.replace(`./confirmation.html?order-id=${orderId}`)
     } else {
       // Pop-up alert dans le cas où le panier est vide et/ou le formulaire n'est pas rempli correctement

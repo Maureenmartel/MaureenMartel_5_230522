@@ -1,3 +1,4 @@
+//----------------------------------------------------------------------------------//
 //---------------------------- Afficher la page produit ----------------------------//
 //----------------------------------------------------------------------------------//
 
@@ -74,6 +75,7 @@ async function fillProductPage() {
 
 fillProductPage()
 
+//----------------------------------------------------------------------------------//
 //-------------------------- Ajout des produits au panier --------------------------//
 //----------------------------------------------------------------------------------//
 
@@ -105,8 +107,9 @@ function checkQuantity() {
 // --- Création d'un objet pour stocker la couleur et la quantité et l'ajouter au tableau idProduct
 function pushNewObject(array, newColorAdded, newQuantityAdded) { 
   let newObject = {
-    color : newColorAdded,                  //sera configurée lors de l'appel de la fonction dans mon eventListener
-    quantity : Number(newQuantityAdded)     //sera configurée lors de l'appel de la fonction dans mon eventListener
+    //Seront configurés lors de l'appel de la fonction dans mon eventListener
+    color : newColorAdded,                  
+    quantity : Number(newQuantityAdded)     
   }
   array.push(newObject)
 }
@@ -128,6 +131,7 @@ function colorAlreadySelected(array, colorFound) {
   }
 }
 
+//----------------------------------------------------------------------------------//
 //------------------ EventListener de bouton "Ajouter au panier" -------------------//
 //----------------------------------------------------------------------------------//
 
@@ -167,11 +171,12 @@ function addToCartEventListener() {
           }
         }
       }
-    } // Si je veux faire quelque chose dans le cas où mes inputs sont incorrects, c'est ici
+    }
   })
 }
 addToCartEventListener()
 
+//----------------------------------------------------------------------------------//
 //------------- Création d'une pop-up de confirmation d'ajout au panier ------------//
 //----------------------------------------------------------------------------------//
 
