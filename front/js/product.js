@@ -136,28 +136,32 @@ function addToCartEventListener() {
     button.addEventListener("click", () => {
       let selectedColor = checkColor()
       let quantitySelected = checkQuantity()
-      if ((checkColor() && checkQuantity()) !== undefined) {                // Si mes inputs sont corrects
-        if (!window.localStorage.getItem("basket")) {                       // Mon panier n'existe pas
-          let basket = {}                                                   // Création de l'objet basket               
-          createIdProperty(basket, selectedColor, quantitySelected)         // Création de l'id + objet dans basket
-          saveBasket(basket)                                                // Sauvegarde dans le localStorage
+      if ((checkColor() && checkQuantity()) !== undefined) {                    // Si mes inputs sont corrects
+        if (!window.localStorage.getItem("basket")) {                           // Mon panier n'existe pas
+          let basket = {}                                                       // Création de l'objet basket               
+          createIdProperty(basket, selectedColor, quantitySelected)             // Création de l'id + objet dans basket
+          saveBasket(basket)                                                    // Sauvegarde dans le localStorage
+          popupConfirmation()
         } else {
-          let basket = JSON.parse(window.localStorage.getItem("basket"))    // Mon panier existe, je le récupère
-          if (!basket.hasOwnProperty(id)) {                                 // Cas n°2 : mon basket ne contient pas de propriété avec le bon id
+          let basket = JSON.parse(window.localStorage.getItem("basket"))        // Mon panier existe, je le récupère
+          if (!basket.hasOwnProperty(id)) {                                     // Cas n°2 : mon basket ne contient pas de propriété avec le bon id
             createIdProperty(basket, selectedColor, quantitySelected)
             saveBasket(basket)
+            popupConfirmation()
           } else {
-            if (!colorAlreadySelected(basket[id], selectedColor)) {         // Cas n°3 : mon ID est présent mais la couleur non
-              pushNewObject(basket[id], selectedColor, quantitySelected)    // Ajout de l'objet couleur/quantité au bon id
+            if (!colorAlreadySelected(basket[id], selectedColor)) {             // Cas n°3 : mon ID est présent mais la couleur non
+              pushNewObject(basket[id], selectedColor, quantitySelected)        // Ajout de l'objet couleur/quantité au bon id
               saveBasket(basket)
+              popupConfirmation()
             } else {
-              for (let object of basket[id]) {                              // Je parcours mon tableau
-                if (object.color === selectedColor) {                       // Je trouve l'objet dont la couleur correspond
+              for (let object of basket[id]) {                                  // Je parcours mon tableau
+                if (object.color === selectedColor) {                           // Je trouve l'objet dont la couleur correspond
                   object.quantity = object.quantity += Number(quantitySelected) // J'ajoute la quantité présente à la quantité selectionnée
-                  if (object.quantity > 100) {                              // Je limite ma quantité storée à 100 articles
-                    object.quantity = 100                                   // Je bloque le compteur à 100 
+                  if (object.quantity > 100) {                                  // Je limite ma quantité storée à 100 articles
+                    object.quantity = 100                                       // Je bloque le compteur à 100 
                   }
-                  saveBasket(basket)                                   
+                  saveBasket(basket)
+                  popupConfirmation()                                 
               }
             }          
           }
@@ -168,10 +172,16 @@ function addToCartEventListener() {
 }
 addToCartEventListener()
 
-//-------------- Ajout d'une pop-up de confirmation d'ajout au panier --------------//
+//------------- Création d'une pop-up de confirmation d'ajout au panier ------------//
 //----------------------------------------------------------------------------------//
 
-
+function popupConfirmation() {
+  if (window.confirm(`Le produit a bien été ajouté à votre panier. Pour consulter le panier, cliquez sur "OK". Pour continuer vos achats, cliquez sur "ANNULER"`)) {
+    window.location.href = "cart.html"
+  } else {
+    window.location.href = "index.html"
+  }
+}
 
 
 
