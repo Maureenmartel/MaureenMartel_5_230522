@@ -409,7 +409,6 @@ function createNewUser() {
 
 // --- Création de la commande
 function orderCreation(articlesAddedToCart) {
-  console.log(articlesAddedToCart)
   let productsIdsArray = createIdsProductsArray(articlesAddedToCart)
   let user = createNewUser()
   // Si j'ai bien des produits dans mon panier et que mes inputs de formulaire sont correctement saisis

@@ -2,21 +2,21 @@
 //------------------------- Création de la page d'accueil --------------------------//
 //----------------------------------------------------------------------------------//
 
-// --- Appel de l'api + reponse tranformée au format json
+// --- Appel de l'api + réponse transformée au format json
 async function getProductsArray() {
   return await fetch('http://localhost:3000/api/products')
     .then((response) => response.json())
     .catch((error) => console.log(error))
 }
 
-// --- Fonction qui créé le lien vers la page produit
+// --- Fonction qui crée le lien vers la page produit
 function createNewLink(product) {
   let newLink = document.createElement('a')
   newLink.setAttribute("href", `./product.html?id=${product._id}`)
   return newLink
 }
 
-// --- Fonction qui créé une image
+// --- Fonction qui crée une image
 function createNewImg(product) {
   let img = document.createElement('img')
   img.src = product.imageUrl
@@ -52,7 +52,7 @@ function createNewArticle(product) {
   return article
 }
 
-// --- Fonction qui créé un lien et qui attache l'article au lien
+// --- Fonction qui crée un lien et qui attache l'article au lien
 function createNewCard(product) {
   let a = createNewLink(product)
   let article = createNewArticle(product)
@@ -60,7 +60,7 @@ function createNewCard(product) {
   return a
 }
 
-// --- Création pour chercher les infos de l'api et appeller createNewCard pour chaque produit du tableau
+// --- Recherche des infos de l'api et appel de createNewCard pour chaque produit du tableau
 async function createAllProductsCards() {
   let products = await getProductsArray()
   for (let product of products) {
