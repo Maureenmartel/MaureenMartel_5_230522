@@ -293,9 +293,9 @@ const cityInput = document.getElementById('city')
 const emailInput = document.getElementById('email')
 
 // --- Constantes qui contiennent les regex de vérification de formulaire
-const nameRegex = /^([a-zéèàç]+){1}([\S\-\1])*$/
+const nameRegex = /^([a-zéèàç\s\]+){1}([\S\-\1])*$/
 const addressRegex = /^([0-9]{1,4})\ {1}([^\t\n\r][a-zéèàçùA-Z0-9\s\-\,\.]+)$/
-const cityRegex = /([0-9]{5}){1}\s([A-Za-zéèàçù]+){1}([\S\-\2])*$/
+const cityRegex = /([A-Za-zéèàçù]+){1}([\S\-\2])*$/
 const emailRegex = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
 
 //----------------------------------------------------------------------------------//
@@ -306,7 +306,7 @@ const emailRegex = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|
 firstNameInput.addEventListener("input", () => {
   // Si la valeur de mon input est invalide, affichage d'un message d'erreur personnalisé
   if (nameRegex.test(firstNameInput.value) == false) {
-    document.getElementById('firstNameErrorMsg').innerText = " Votre prénom ne doit contenir que des lettres, tiret autorisé pour les prénoms composés." 
+    document.getElementById('firstNameErrorMsg').innerText = " Votre prénom ne doit contenir que des lettres, tiret et espace autorisé pour les prénoms composés." 
   } else {
     document.getElementById('firstNameErrorMsg').innerText = ""
   }
@@ -315,7 +315,7 @@ firstNameInput.addEventListener("input", () => {
 // --- Vérification de l'input "lastName" et ajout du message d'erreur
 lastNameInput.addEventListener("input", () => {
   if (nameRegex.test(lastNameInput.value) == false) {
-    document.getElementById('lastNameErrorMsg').innerText = " Votre nom ne doit contenir que des lettres, tiret autorisé pour les prénoms composés."
+    document.getElementById('lastNameErrorMsg').innerText = " Votre nom ne doit contenir que des lettres, tiret et espace autorisé pour les noms composés."
   } else {
     document.getElementById('lastNameErrorMsg').innerText = ""
   }
@@ -333,7 +333,7 @@ addressInput.addEventListener("input", () => {
 // --- Vérification de l'input "city" et ajout du message d'erreur
 cityInput.addEventListener("input", () => {
   if (cityRegex.test(cityInput.value) == false) {
-    document.getElementById('cityErrorMsg').innerText = " Veuillez indiquer d'abord votre code postal puis le nom de votre ville."
+    document.getElementById('cityErrorMsg').innerText = " Veuillez indiquer le nom de votre ville."
   } else {
     document.getElementById('cityErrorMsg').innerText = ""
   }
