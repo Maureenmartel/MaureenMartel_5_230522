@@ -171,6 +171,8 @@ function addToCartEventListener() {
           }
         }
       }
+    } else {
+      window.alert("Veuillez sélectionner une couleur ainsi que la quantité souhaitée pour votre produit.")
     }
   })
 }
