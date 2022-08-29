@@ -161,8 +161,8 @@ function addToCartEventListener() {
               for (let object of basket[id]) {                                  // Je parcours mon tableau
                 if (object.color === selectedColor) {                           // Je trouve l'objet dont la couleur correspond
                   object.quantity = object.quantity += Number(quantitySelected) // J'ajoute la quantité présente à la quantité selectionnée
-                  if (object.quantity > 100) {                                  // Je limite ma quantité storée à 100 articles
-                    object.quantity = 100                                       // Je bloque le compteur à 100 
+                  if (object.quantity > 100)  {                                 // Je limite ma quantité storée à 100 articles
+                    object.quantity = 100                                       // Je bloque le compteur à 100
                   }
                   saveBasket(basket)
                   popupConfirmation()                                 
@@ -172,7 +172,7 @@ function addToCartEventListener() {
         }
       }
     } else {
-      window.alert("Veuillez sélectionner une couleur ainsi que la quantité souhaitée pour votre produit.")
+      window.alert("Veuillez sélectionner une couleur ainsi que la quantité souhaitée (de 1 à 100) pour votre produit.")
     }
   })
 }
