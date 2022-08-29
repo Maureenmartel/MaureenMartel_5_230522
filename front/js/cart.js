@@ -172,24 +172,32 @@ function createArticles(productArray, product, idIndex) {
 function inputDataQuantity() {
   // Récupération de la NodeList des éléments du document, correspondant au sélecteur CSS ciblé
   let inputsValue = document.querySelectorAll(".itemQuantity")
-  let totalQuantity = 0                                         
-  for (let input of inputsValue) {
-    totalQuantity = totalQuantity += Number(input.value)
-    document.getElementById("totalQuantity").innerText = totalQuantity
+  if (inputsValue.length > 0) {
+    let totalQuantity = 0                                        
+    for (let input of inputsValue) {
+      totalQuantity = totalQuantity += Number(input.value)
+      document.getElementById("totalQuantity").innerText = totalQuantity
+    }
+  } else {
+    document.getElementById("totalQuantity").innerText = 0
   }
 }
 
 // --- Pour chaque article, collecte des données de l'input Quantité et infos du prix depuis l'API
 async function getTotalPrice() {
   let allProductInBasket = document.querySelectorAll("article.cart__item")
-  let totalPrice = 0
-  for (let article of allProductInBasket) {
-    let numberOfProducts = Number(article.querySelector(".itemQuantity").value)
-    let productsId = article.getAttribute("data-id")
-    let product = await getObjectWithId(productsId)
-    let itemPrice = product.price
-    totalPrice = totalPrice += Number(numberOfProducts *= itemPrice)
-    document.getElementById("totalPrice").innerText = totalPrice
+  if (allProductInBasket.length > 0) {
+    let totalPrice = 0
+    for (let article of allProductInBasket) {
+      let numberOfProducts = Number(article.querySelector(".itemQuantity").value)
+      let productsId = article.getAttribute("data-id")
+      let product = await getObjectWithId(productsId)
+      let itemPrice = product.price
+      totalPrice = totalPrice += Number(numberOfProducts *= itemPrice)
+      document.getElementById("totalPrice").innerText = totalPrice
+    }
+  } else {
+    document.getElementById("totalPrice").innerText = 0
   }
 }
 
@@ -202,21 +210,26 @@ function quantityChange() {
   let quantityInputs = document.querySelectorAll("input.itemQuantity")
   if (quantityInputs !== []) {  //Si j'ai un article dans mon panier
     for (let input of quantityInputs) {
+      // Je store ma quantité avant éventuel changement
+      let previousValue = input.value
       input.addEventListener('change', () => {
-        // Mise à jour de la quantité
-        inputDataQuantity()
-        // Mise à jour du prix
-        getTotalPrice()
-        let articleChange = input.closest('article.cart__item')
-        let colorChange = articleChange.getAttribute("data-color")
-        let idChange = articleChange.getAttribute("data-id")
-        let basket = JSON.parse(window.localStorage.getItem("basket"))
-        for (let item of basket[idChange]) {
-          if (item.color === colorChange && (input.value <= 100 && input.value >= 1)) {
-            item.quantity = input.value
-            saveBasket(basket)
+        if (input.value <= 100 && input.value >= 1) {
+          let articleChange = input.closest('article.cart__item')
+          let colorChange = articleChange.getAttribute("data-color")
+          let idChange = articleChange.getAttribute("data-id")
+          let basket = JSON.parse(window.localStorage.getItem("basket"))
+          for (let item of basket[idChange]) {
+            if (item.color === colorChange) {
+              item.quantity = input.value
+              saveBasket(basket)
+            } 
           }
-        }
+          inputDataQuantity()
+          getTotalPrice()
+        } else {
+          window.alert('Merci de saisir une quantité entre 1 et 100.')
+          input.value = previousValue
+        }        
       })
     }
   } 
