@@ -140,29 +140,34 @@ function addToCartEventListener() {
     button.addEventListener("click", () => {
       let selectedColor = checkColor()
       let quantitySelected = checkQuantity()
-      if ((checkColor() && checkQuantity()) !== undefined) {                    // Si mes inputs sont corrects
-        if (!window.localStorage.getItem("basket")) {                           // Mon panier n'existe pas
-          let basket = {}                                                       // Création de l'objet basket               
-          createIdProperty(basket, selectedColor, quantitySelected)             // Création de l'id + objet dans basket
-          saveBasket(basket)                                                    // Sauvegarde dans le localStorage
+      if ((checkColor() && checkQuantity()) !== undefined) {                    
+        // Cas n°1 : Mon panier n'existe pas
+        if (!window.localStorage.getItem("basket")) {                           
+          let basket = {}                                                                     
+          createIdProperty(basket, selectedColor, quantitySelected)             
+          saveBasket(basket)                                                    
           popupConfirmation()
         } else {
-          let basket = JSON.parse(window.localStorage.getItem("basket"))        // Mon panier existe, je le récupère
-          if (!basket.hasOwnProperty(id)) {                                     // Cas n°2 : mon basket ne contient pas de propriété avec le bon id
+          let basket = JSON.parse(window.localStorage.getItem("basket"))        
+          // Cas n°2 : Mon panier ne contient pas de propriété avec le bon id
+          if (!basket.hasOwnProperty(id)) {                                     
             createIdProperty(basket, selectedColor, quantitySelected)
             saveBasket(basket)
             popupConfirmation()
           } else {
-            if (!colorAlreadySelected(basket[id], selectedColor)) {             // Cas n°3 : mon ID est présent mais la couleur non
-              pushNewObject(basket[id], selectedColor, quantitySelected)        // Ajout de l'objet couleur/quantité au bon id
+            // Cas n°3 : Mon ID est présent mais la couleur non
+            if (!colorAlreadySelected(basket[id], selectedColor)) {             
+              pushNewObject(basket[id], selectedColor, quantitySelected)        
               saveBasket(basket)
               popupConfirmation()
             } else {
-              for (let object of basket[id]) {                                  // Je parcours mon tableau
-                if (object.color === selectedColor) {                           // Je trouve l'objet dont la couleur correspond
-                  object.quantity = object.quantity += Number(quantitySelected) // J'ajoute la quantité présente à la quantité selectionnée
-                  if (object.quantity > 100)  {                                 // Je limite ma quantité storée à 100 articles
-                    object.quantity = 100                                       // Je bloque le compteur à 100
+              // Cas n° 4 : Ajout d'un article dont la couleur est déjà présente dans le panier
+              for (let object of basket[id]) {                                  
+                if (object.color === selectedColor) {                           
+                  object.quantity = object.quantity += Number(quantitySelected) 
+                  // Je limite ma quantité storée à 100 articles
+                  if (object.quantity > 100)  {                                 
+                    object.quantity = 100                                       
                   }
                   saveBasket(basket)
                   popupConfirmation()                                 
