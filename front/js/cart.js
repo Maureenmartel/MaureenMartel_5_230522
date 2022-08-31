@@ -306,8 +306,8 @@ const cityInput = document.getElementById('city')
 const emailInput = document.getElementById('email')
 
 // --- Constantes qui contiennent les regex de vérification de formulaire
-const nameRegex = /^[a-z ,.'-]+$/i
-const addressRegex = /^[a-zA-Z0-9\s,'-]*$/
+const nameRegex = /^[a-zàâäéèêëïîôöùûüç ,.'-]+$/i
+const addressRegex = /^[a-zàâäéèêëïîôöùûüçA-Z0-9\s,'-]*$/
 const cityRegex = /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/
 
