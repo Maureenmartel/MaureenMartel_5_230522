@@ -125,10 +125,11 @@ function colorAlreadySelected(array, colorFound) {
   for (let object of array) {
     if (object.color == colorFound) {
       return true
-    } else {
-      return false
+    //} else {
+    //  return false
     }
   }
+  return false //replacement de la vérification négative au bon endroit.
 }
 
 //----------------------------------------------------------------------------------//
